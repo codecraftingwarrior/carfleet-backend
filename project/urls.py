@@ -18,10 +18,16 @@ from django.urls import path, include
 from rest_framework import routers
 
 from core.viewsets import BrandViewSet
+from core.viewsets.ManufacturerViewSet import ManufacturerViewSet
+from core.viewsets.VehicleUnitViewSet import VehicleUnitViewSet
+from core.viewsets.VehicleViewSet import VehicleViewSet
 
 router = routers.SimpleRouter()
 
 router.register('brands', BrandViewSet, basename='brands')
+router.register('manufacturers', ManufacturerViewSet, basename='manufacturers')
+router.register('vehicles', VehicleViewSet, basename='vehicles')
+router.register('vehicle-units', VehicleUnitViewSet, basename='vehicle-units')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
