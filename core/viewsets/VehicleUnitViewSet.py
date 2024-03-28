@@ -1,11 +1,17 @@
-from rest_framework import viewsets, status
+from django.contrib.auth import get_user_model
+from rest_framework import viewsets, status, permissions
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from core.models import VehicleUnit
 from core.permissions import IsAdminOrReadOnly
+from core.serializers.rental_contracts.RentalContractCreateOrUpdateSerializer import \
+    RentalContractCreateOrUpdateSerializer
 from core.serializers.vehicle_unit.VehicleUnitCreateOrUpdateSerializer import VehicleUnitCreateOrUpdateSerializer
 from core.serializers.vehicle_unit.VehicleUnitDetailSerializer import VehicleUnitDetailSerializer
 from core.serializers.vehicle_unit.VehicleUnitListSerializer import VehicleUnitListSerializer
+
+User = get_user_model()
 
 
 class VehicleUnitViewSet(viewsets.ModelViewSet):
@@ -33,3 +39,15 @@ class VehicleUnitViewSet(viewsets.ModelViewSet):
             return Response(detail_serializer.data)
 
         return Response(update_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
+    def rent(self, request, pk):
+        serializer = RentalContractCreateOrUpdateSerializer(data=request.data)
+
+        if serializer.is_valid():
+            rental_contract = serializer.save()
+            if rental_contract:
+                rental_contract.rented_by = User.objects.filter(id=request.user.id).first()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
