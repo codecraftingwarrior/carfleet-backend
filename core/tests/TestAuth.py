@@ -3,10 +3,12 @@ from django.urls import reverse_lazy
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from core.tests.AuthenticationAwareTestCase import AuthenticationAwareTestCase
+
 User = get_user_model()
 
 
-class TestAuth(APITestCase):
+class TestAuth(AuthenticationAwareTestCase):
 
     def test_customer_registration(self):
         path = reverse_lazy('auth-register')
@@ -17,7 +19,8 @@ class TestAuth(APITestCase):
             'address': '123 Main Street',
             'phone': '0123456789',
             'email': 'test@test.fr',
-            'password': 'thereisapassword'
+            'password': 'thereisapassword',
+            'user_type': 'customer'
         }
 
         response = self.client.post(path, data=payload, format='json')
@@ -26,3 +29,11 @@ class TestAuth(APITestCase):
         self.assertTrue(User.objects.filter(email=payload.get('email')).exists())
         self.assertTrue(User.objects.filter(email=payload.get('email')).get().groups.filter(name='Customer').exists())
         self.assertTrue("groups" in response.json())
+
+    def test_login(self):
+        response = self.authenticate_and_get_response()
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue('access' in response.json())
+        self.assertTrue('refresh' in response.json())
+

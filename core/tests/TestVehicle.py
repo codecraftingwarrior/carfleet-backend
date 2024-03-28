@@ -3,9 +3,10 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from core.models import Vehicle, Brand, Manufacturer
+from core.tests.AuthenticationAwareTestCase import AuthenticationAwareTestCase
 
 
-class TestVehicle(APITestCase):
+class TestVehicle(AuthenticationAwareTestCase):
 
     def test_list(self):
         self.assertFalse(Vehicle.objects.exists())

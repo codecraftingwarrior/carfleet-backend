@@ -2,6 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 
 from core.models import VehicleUnit
+from core.permissions import IsAdminOrReadOnly
 from core.serializers.vehicle_unit.VehicleUnitCreateOrUpdateSerializer import VehicleUnitCreateOrUpdateSerializer
 from core.serializers.vehicle_unit.VehicleUnitDetailSerializer import VehicleUnitDetailSerializer
 from core.serializers.vehicle_unit.VehicleUnitListSerializer import VehicleUnitListSerializer
@@ -9,6 +10,7 @@ from core.serializers.vehicle_unit.VehicleUnitListSerializer import VehicleUnitL
 
 class VehicleUnitViewSet(viewsets.ModelViewSet):
     serializer_class = VehicleUnitListSerializer
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_queryset(self):
         return VehicleUnit.objects.all()

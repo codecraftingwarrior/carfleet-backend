@@ -5,18 +5,21 @@ from rest_framework import serializers
 User = get_user_model()
 
 
-class CustomerRegistrationSerializer(serializers.ModelSerializer):
+class RegistrationSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(required=True)
     password = serializers.CharField(required=True, write_only=True)
     first_name = serializers.CharField(required=True)
     last_name = serializers.CharField(required=True)
+    user_type = serializers.CharField(required=True, write_only=True)
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'address', 'phone', 'email', 'password']
+        fields = ['first_name', 'last_name', 'address', 'phone', 'email', 'password', 'user_type']
 
     def create(self, validated_data):
         customer_group, _ = Group.objects.get_or_create(name='Customer')
+        admin_group, _ = Group.objects.get_or_create(name='Admin')
+        user_type = validated_data.pop('user_type')
 
         user = User.objects.create_user(
             username=validated_data['email'],
@@ -28,6 +31,9 @@ class CustomerRegistrationSerializer(serializers.ModelSerializer):
         )
         user.set_password(validated_data['password'])
 
-        customer_group.user_set.add(user)
+        if user_type == 'customer':
+            customer_group.user_set.add(user)
+        elif user_type == 'admin':
+            customer_group.user_set.add(admin_group)
 
         return user
