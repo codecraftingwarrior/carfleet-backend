@@ -3,13 +3,13 @@ import uuid
 from django.contrib.auth.models import User
 from django.db import models
 
-from core.models.Customer import Customer
+from core.models.ApplicationUser import ApplicationUser
 from core.models.VehicleUnit import VehicleUnit
 
 
 class RentalContract(models.Model):
-    rented_by = models.ForeignKey(User, on_delete=models.SET_NULL, related_name='rental_contracts', null=True)
-    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, related_name='rental_contracts', null=True)
+    rented_by = models.ForeignKey(ApplicationUser, on_delete=models.SET_NULL, related_name='rental_contracts', null=True)
+    customer = models.ForeignKey(ApplicationUser, on_delete=models.SET_NULL, related_name='rental_customers', null=True)
     vehicle = models.ForeignKey(VehicleUnit, on_delete=models.SET_NULL, related_name='rental_contracts', null=True)
 
     start_date = models.DateField()

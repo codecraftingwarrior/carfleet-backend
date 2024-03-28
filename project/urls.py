@@ -18,6 +18,7 @@ from django.urls import path, include
 from rest_framework import routers
 
 from core.viewsets import BrandViewSet
+from core.viewsets.AuthViewSet import AuthViewSet
 from core.viewsets.ManufacturerViewSet import ManufacturerViewSet
 from core.viewsets.VehicleUnitViewSet import VehicleUnitViewSet
 from core.viewsets.VehicleViewSet import VehicleViewSet
@@ -28,6 +29,7 @@ router.register('brands', BrandViewSet, basename='brands')
 router.register('manufacturers', ManufacturerViewSet, basename='manufacturers')
 router.register('vehicles', VehicleViewSet, basename='vehicles')
 router.register('vehicle-units', VehicleUnitViewSet, basename='vehicle-units')
+router.register('auth', AuthViewSet, basename='auth')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
