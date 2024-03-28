@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -14,6 +16,7 @@ class RentalContract(models.Model):
     end_date = models.DateField()
     total_price = models.DecimalField(max_digits=12, decimal_places=6)
     conditions = models.TextField(blank=True, null=True)
+    sale_global_id = models.UUIDField(default=uuid.uuid4)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

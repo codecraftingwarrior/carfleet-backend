@@ -1,7 +1,7 @@
 from rest_framework import viewsets, serializers
 
 from core.models import Brand
-from core.serializers import BrandListSerializer
+from core.serializers.brand.BrandListSerializer import BrandListSerializer
 
 
 class BrandViewSet(viewsets.ModelViewSet):
