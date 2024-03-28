@@ -1,7 +1,9 @@
 from rest_framework import viewsets, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.models import Vehicle
+from core.permissions.IsAdmin import IsAdmin
 from core.serializers.vehicle.VehicleCreateOrUpdateSerializer import VehicleCreateOrUpdateSerializer
 from core.serializers.vehicle.VehicleDetailSerializer import VehicleDetailSerializer
 from core.serializers.vehicle.VehicleListSerializer import VehicleListSerializer
@@ -9,6 +11,7 @@ from core.serializers.vehicle.VehicleListSerializer import VehicleListSerializer
 
 class VehicleViewSet(viewsets.ModelViewSet):
     serializer_class = VehicleListSerializer
+    permission_classes = [IsAdmin, IsAuthenticated]
 
     def get_queryset(self):
         return Vehicle.objects.all()

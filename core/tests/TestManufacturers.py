@@ -3,9 +3,10 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from core.models import Manufacturer
+from core.tests.AuthenticationAwareTestCase import AuthenticationAwareTestCase
 
 
-class TestManufacturers(APITestCase):
+class TestManufacturers(AuthenticationAwareTestCase):
     list_path = reverse_lazy('manufacturers-list')
 
     def test_list(self):

@@ -3,7 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from core.serializers.auth.CustomerRegistrationSerializer import CustomerRegistrationSerializer
+from core.serializers.auth.RegistrationSerializer import RegistrationSerializer
 from core.serializers.auth.RegistrationResponseSerializer import RegistrationResponseSerializer
 
 
@@ -20,7 +20,7 @@ class AuthViewSet(viewsets.ViewSet):
 
     @action(detail=False, methods=['post'], permission_classes=[AllowAny])
     def register(self, request):
-        serializer = CustomerRegistrationSerializer(data=request.data)
+        serializer = RegistrationSerializer(data=request.data)
 
         if serializer.is_valid():
             user = serializer.save()
