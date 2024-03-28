@@ -9,6 +9,7 @@ User = get_user_model()
 
 
 class TestAuth(AuthenticationAwareTestCase):
+    authenticate_before_each = False
 
     def test_customer_registration(self):
         path = reverse_lazy('auth-register')
