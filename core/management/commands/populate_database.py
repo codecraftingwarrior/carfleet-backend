@@ -69,6 +69,17 @@ class Command(BaseCommand):
             "Bonneville"  # Modèle de moto Triumph
         ]
 
+        vehicle_types = [
+            'SUV',
+            'Sedan',
+            'Coupe',
+            'Convertible',
+            'Pickup',
+            'Minivan',
+            'Van',
+            'Motorcycle'
+        ]
+
         models_by_inserter = {
             'ApplicationUser': lambda: ApplicationUser.objects.create(
                 first_name=self.fake.first_name(),
@@ -94,6 +105,7 @@ class Command(BaseCommand):
                 brand=random.choice(Brand.objects.all()),
                 owner=random.choice(User.objects.all()),
                 model=random.choice(vehicle_models),
+                type=random.choice(vehicle_types),
                 year=self.fake.year(),
                 description=self.fake.text()
             ),
@@ -115,3 +127,7 @@ class Command(BaseCommand):
                     if model == 'ApplicationUser':
                         group = random.choice(Group.objects.all())
                         group.user_set.add(instance)
+                        if group.name == 'Admin':
+                            instance.is_staff = True
+                            instance.is_superuser = True
+                            instance.save()

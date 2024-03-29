@@ -9,17 +9,18 @@ from core.models.Brand import Brand
 from core.models.Manufacturer import Manufacturer
 
 
-class Vehicle(models.Model):
-    class VehicleTypes(models.TextChoices):
-        SUV = 'SUV', _('SUV')
-        SEDAN = 'Sedan', _('SEDAN')
-        COUPE = 'Coupe', _('COUPE')
-        CONVERTIBLE = 'Convertible', _('CONVERTIBLE')
-        PICKUP = 'Pickup', _('PICKUP')
-        MINIVAN = 'Minivan', _('MINIVAN')
-        VAN = 'Van', _('VAN')
-        MOTORCYCLE = 'Motorcycle', _('MOTORCYCLE')
+class VehicleTypes(models.TextChoices):
+    SUV = 'SUV', _('SUV')
+    SEDAN = 'Sedan', _('SEDAN')
+    COUPE = 'Coupe', _('COUPE')
+    CONVERTIBLE = 'Convertible', _('CONVERTIBLE')
+    PICKUP = 'Pickup', _('PICKUP')
+    MINIVAN = 'Minivan', _('MINIVAN')
+    VAN = 'Van', _('VAN')
+    MOTORCYCLE = 'Motorcycle', _('MOTORCYCLE')
 
+
+class Vehicle(models.Model):
     brand = models.ForeignKey(Brand, on_delete=models.SET_NULL, related_name='vehicles', null=True)
     manufacturer = models.ForeignKey(Manufacturer, on_delete=models.SET_NULL, related_name='vehicles', null=True)
     owner = models.ForeignKey('ApplicationUser', on_delete=models.SET_NULL, related_name='vehicles', null=True)
@@ -34,4 +35,4 @@ class Vehicle(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.model
+        return f'{self.model} {self.year}'
