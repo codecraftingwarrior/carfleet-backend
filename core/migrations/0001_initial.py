@@ -110,8 +110,8 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('customer', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='sale_customers', to=settings.AUTH_USER_MODEL)),
-                ('sold_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='sales', to=settings.AUTH_USER_MODEL)),
-                ('vehicle', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='sales', to='core.vehicleunit')),
+                ('sold_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='sale', to=settings.AUTH_USER_MODEL)),
+                ('vehicle', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='sale', to='core.vehicleunit')),
             ],
         ),
         migrations.CreateModel(
@@ -126,8 +126,8 @@ class Migration(migrations.Migration):
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('customer', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='rental_customers', to=settings.AUTH_USER_MODEL)),
-                ('rented_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='rental_contracts', to=settings.AUTH_USER_MODEL)),
-                ('vehicle', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='rental_contracts', to='core.vehicleunit')),
+                ('rented_by', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='rental_contract', to=settings.AUTH_USER_MODEL)),
+                ('vehicle', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='rental_contract', to='core.vehicleunit')),
             ],
         ),
         migrations.AddField(

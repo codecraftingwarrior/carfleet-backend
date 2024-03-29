@@ -1,7 +1,8 @@
 from django.urls import reverse_lazy
 from rest_framework import status
 
-from core.models import Vehicle, Brand, Manufacturer, VehicleUnit, RentalContract
+from core.models import Vehicle, Brand, Manufacturer, VehicleUnit, RentalContract, Sale
+from core.models.VehicleUnit import VehicleUnitStatuses
 from core.tests.AuthenticationAwareTestCase import AuthenticationAwareTestCase
 
 
@@ -74,3 +75,41 @@ class TestVehicleUnit(AuthenticationAwareTestCase):
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertTrue(RentalContract.objects.exists())
+        self.assertEqual(VehicleUnit.objects.filter(id=vehicle_unit.id).first().status, VehicleUnitStatuses.RENTED)
+
+    def test_sale_must_success(self):
+        self.assertFalse(Sale.objects.exists())
+
+        vehicle = Vehicle.objects.create(
+            model='Test model',
+            type='Sedan',
+            year=2010,
+            description='Test description',
+            brand=Brand.objects.create(name='Test brand', origin_country='Test country'),
+            manufacturer=Manufacturer.objects.create(name='Test manufacturer', address='Test address',
+                                                     contact='Test contact')
+        )
+
+        vehicle_unit = VehicleUnit.objects.create(
+            vehicle=vehicle,
+            plate_number='FJ-799-MN',
+            mileage='175000',
+            color='black',
+            price=78
+        )
+
+        authentication_response = self.authenticate_and_get_response(is_admin=False)
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + authentication_response.json().get('access'))
+
+        path = reverse_lazy('vehicle-units-sale', kwargs={'pk': vehicle_unit.id})
+
+        payload = {
+            'sale_date': '2020-01-01',
+            'price': '175000'
+        }
+
+        response = self.client.post(path, data=payload, format='json')
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertTrue(Sale.objects.exists())
+        self.assertEqual(VehicleUnit.objects.filter(id=vehicle_unit.id).first().status, VehicleUnitStatuses.SOLD)

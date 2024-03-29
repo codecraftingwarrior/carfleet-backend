@@ -8,8 +8,8 @@ from core.models.VehicleUnit import VehicleUnit
 
 
 class RentalContract(models.Model):
-    rented_by = models.ForeignKey(ApplicationUser, on_delete=models.SET_NULL, related_name='rental_contracts', null=True)
-    vehicle = models.ForeignKey(VehicleUnit, on_delete=models.SET_NULL, related_name='rental_contracts', null=True)
+    rented_by = models.ForeignKey(ApplicationUser, on_delete=models.SET_NULL, related_name='rental_contract', null=True)
+    vehicle = models.ForeignKey(VehicleUnit, on_delete=models.SET_NULL, related_name='rental_contract', null=True)
 
     start_date = models.DateField()
     end_date = models.DateField()

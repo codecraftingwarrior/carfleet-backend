@@ -6,12 +6,13 @@ from core.models.Vehicle import Vehicle
 from django.utils.translation import gettext_lazy as _
 
 
-class VehicleUnit(models.Model):
-    class VehicleUnitStatuses(models.TextChoices):
-        AVAILABLE = 'AVAILABLE', _('AVAILABLE'),
-        RENTED = 'RENTED', _('RENTED')
-        SOLD = 'SOLD', _('SOLD')
+class VehicleUnitStatuses(models.TextChoices):
+    AVAILABLE = 'AVAILABLE', _('AVAILABLE'),
+    RENTED = 'RENTED', _('RENTED')
+    SOLD = 'SOLD', _('SOLD')
 
+
+class VehicleUnit(models.Model):
     vehicle = models.ForeignKey(Vehicle, on_delete=models.SET_NULL, related_name='units', null=True)
 
     plate_number = models.CharField(max_length=20)
