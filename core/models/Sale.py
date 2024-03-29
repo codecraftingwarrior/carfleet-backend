@@ -8,7 +8,7 @@ from core.models.VehicleUnit import VehicleUnit
 
 
 class Sale(models.Model):
-    customer = models.ForeignKey(ApplicationUser, on_delete=models.SET_NULL, related_name='purchases', null=True)
+    customer = models.ForeignKey(ApplicationUser, on_delete=models.SET_NULL, null=True)
     vehicle = models.ForeignKey(VehicleUnit, on_delete=models.SET_NULL, related_name='sales', null=True)
 
     sale_date = models.DateField()
