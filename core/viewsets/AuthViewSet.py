@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, status, serializers
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
@@ -7,6 +8,10 @@ from core.serializers.auth.RegistrationSerializer import RegistrationSerializer
 from core.serializers.auth.RegistrationResponseSerializer import RegistrationResponseSerializer
 
 
+
+@extend_schema(
+    tags=['Authentication']
+)
 class AuthViewSet(viewsets.ViewSet):
     permission_classes_by_action = {
         'register': [AllowAny]

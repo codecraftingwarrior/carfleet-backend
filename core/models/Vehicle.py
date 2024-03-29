@@ -36,3 +36,6 @@ class Vehicle(models.Model):
 
     def __str__(self):
         return f'{self.model} {self.year}'
+
+    class Meta:
+        ordering = ('-created_at',)
