@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django_extensions',
     'rest_framework_simplejwt',
     'core',
-    'drf_spectacular'
+    'drf_spectacular',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -154,6 +155,15 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False
 }
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
+
+ASGI_APPLICATION = 'project.routing.application'
+
 
 FAKER_LOCAL = None
 FAKER_PROVIDERS = None
