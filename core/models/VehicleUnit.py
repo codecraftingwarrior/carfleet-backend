@@ -27,3 +27,6 @@ class VehicleUnit(models.Model):
 
     def __str__(self):
         return f'{self.vehicle.brand.name} {self.vehicle.model} {self.plate_number}'
+
+    class Meta:
+        ordering = ('-created_at',)

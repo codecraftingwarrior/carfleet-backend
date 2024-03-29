@@ -1,3 +1,4 @@
+from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -9,6 +10,9 @@ from core.serializers.vehicle.VehicleDetailSerializer import VehicleDetailSerial
 from core.serializers.vehicle.VehicleListSerializer import VehicleListSerializer
 
 
+@extend_schema(
+    tags=['Vehicles']
+)
 class VehicleViewSet(viewsets.ModelViewSet):
     serializer_class = VehicleListSerializer
     permission_classes = [IsAdmin, IsAuthenticated]

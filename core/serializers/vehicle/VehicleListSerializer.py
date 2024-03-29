@@ -1,3 +1,5 @@
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from core.models import Vehicle
@@ -5,7 +7,7 @@ from core.serializers.brand.BrandListSerializer import BrandListSerializer
 
 
 class VehicleListSerializer(serializers.ModelSerializer):
-    #brand = serializers.SerializerMethodField()
+    brand = serializers.SerializerMethodField()
     class Meta:
         model = Vehicle
         fields = ['id', 'model', 'global_id', 'type', 'year', 'brand']
@@ -18,5 +20,6 @@ class VehicleListSerializer(serializers.ModelSerializer):
 
         return data
 
+    @extend_schema_field(OpenApiTypes.OBJECT)
     def get_brand(self, obj):
         return BrandListSerializer(obj.brand).data

@@ -13,3 +13,6 @@ class ApplicationUser(AbstractUser):
 
     rented_vehicles = models.ManyToManyField('VehicleUnit', through='RentalContract', related_name='rented_by')
     purchased_vehicles = models.ManyToManyField('VehicleUnit', through='Sale', related_name='customer')
+
+    class Meta:
+        ordering = ('first_name', 'last_name',)

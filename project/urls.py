@@ -23,6 +23,10 @@ from core.viewsets.AuthViewSet import AuthViewSet
 from core.viewsets.ManufacturerViewSet import ManufacturerViewSet
 from core.viewsets.VehicleUnitViewSet import VehicleUnitViewSet
 from core.viewsets.VehicleViewSet import VehicleViewSet
+from django.conf.urls.static import static
+from django.conf import settings
+
+from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
 
 router = routers.SimpleRouter()
 
@@ -36,5 +40,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
     path('api/auth/login-check/', TokenObtainPairView.as_view(), name='token-obtain-pair'),
-    path('api/auth/token-refresh/', TokenRefreshView.as_view(), name='token-refresh')
+    path('api/auth/token-refresh/', TokenRefreshView.as_view(), name='token-refresh'),
+
+    # API Documentation
+    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
+    path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

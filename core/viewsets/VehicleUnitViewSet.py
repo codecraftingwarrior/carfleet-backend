@@ -1,9 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
+from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.serializers import Serializer
 
 from core.models import VehicleUnit
 from core.models.VehicleUnit import VehicleUnitStatuses
@@ -18,6 +18,19 @@ from core.serializers.vehicle_unit.VehicleUnitListSerializer import VehicleUnitL
 User = get_user_model()
 
 
+@extend_schema(
+    tags=['VehicleUnit']
+)
+@extend_schema_view(
+    rent=extend_schema(
+        request=RentalContractCreateOrUpdateSerializer,
+        description='Use this endpoint to rent a specific vehicle unit.'
+    ),
+    sale=extend_schema(
+        request=SaleCreateOrUpdateSerializer,
+        description='Use this endpoint to sale a specific vehicle unit'
+    )
+)
 class VehicleUnitViewSet(viewsets.ModelViewSet):
     serializer_class = VehicleUnitListSerializer
     permission_classes = [IsAdminOrReadOnly]
