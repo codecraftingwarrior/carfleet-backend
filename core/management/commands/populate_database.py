@@ -1,6 +1,7 @@
 import random
 
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
 from django.core.management import BaseCommand, call_command
 from django.db import transaction
 from django.contrib.auth.hashers import make_password
@@ -37,6 +38,10 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS('Database populated successfully'))
 
     def populate(self):
+        groups = [
+            Group(name='Admin'),
+            Group(name='Customer')
+        ]
         brands = ["Toyota", "Honda", "BMW", "Ducati", "Ford", "Harley-Davidson", "Nissan", "Kawasaki", "Tesla",
                   "Yamaha"]
         manufacturers = ["Peugeot", "Renault", "Volkswagen", "Mercedes-Benz", "Audi", "Chevrolet", "Fiat", "Ford",
@@ -72,7 +77,7 @@ class Command(BaseCommand):
                 username=self.fake.unique.email(),
                 address=self.fake.address(),
                 phone=self.fake.bothify('############'),
-                password=make_password('thereisapwd')
+                password=make_password('thereisapwd'),
             ),
             'Manufacturer': lambda: Manufacturer.objects.create(
                 name=random.choice(manufacturers),
@@ -102,6 +107,11 @@ class Command(BaseCommand):
         }
 
         with transaction.atomic():
+            Group.objects.bulk_create(groups)
+
             for i in range(self.item_size):
                 for model in models_by_inserter:
-                    models_by_inserter.get(model)()
+                    instance = models_by_inserter.get(model)()
+                    if model == 'ApplicationUser':
+                        group = random.choice(Group.objects.all())
+                        group.user_set.add(instance)

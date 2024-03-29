@@ -35,6 +35,6 @@ router.register('auth', AuthViewSet, basename='auth')
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
-    path('api/login-check', TokenObtainPairView.as_view(), name='token-obtain-pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token-refresh')
+    path('api/auth/login-check/', TokenObtainPairView.as_view(), name='token-obtain-pair'),
+    path('api/auth/token-refresh/', TokenRefreshView.as_view(), name='token-refresh')
 ]
