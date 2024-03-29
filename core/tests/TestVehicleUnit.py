@@ -67,8 +67,7 @@ class TestVehicleUnit(AuthenticationAwareTestCase):
             'start_date': '2020-01-01',
             'end_date': '2020-12-31',
             'total_price': 100000,
-            'conditions': 'Test conditions',
-            'vehicle': vehicle.id
+            'conditions': 'Test conditions'
         }
 
         response = self.client.post(path, data=payload, format='json')

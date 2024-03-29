@@ -141,3 +141,10 @@ AUTH_USER_MODEL = 'core.ApplicationUser'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': ('rest_framework_simplejwt.authentication.JWTAuthentication',)
 }
+
+PASSWORD_HASHERS = [
+    "django.contrib.auth.hashers.BCryptSHA256PasswordHasher"
+]
+
+FAKER_LOCAL = None
+FAKER_PROVIDERS = None
