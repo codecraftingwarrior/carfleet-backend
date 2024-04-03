@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.forms.models import model_to_dict
 
-from core.consumers import VEHICLE_SUBSCRIBER_GROUP_NAME
+from core.consumers import VEHICLE_SUBSCRIBER_GROUP_NAME, WEBSOCKET_INSERTION_ACTION, WEBSOCKET_UPDATE_ACTION
 from core.helpers import UUIDEncoder
 from core.models import Vehicle
 from core.permissions.IsAdmin import IsAdmin
@@ -52,11 +52,13 @@ class VehicleViewSet(viewsets.ModelViewSet):
 
         if response.status_code == status.HTTP_201_CREATED:
             channel_layer = get_channel_layer()
+            serializer = VehicleDetailSerializer(Vehicle.objects.get(id=response.data['id']))
 
             payload = {
+                'type': 'vehicle_added',
                 'perimeter': 'vehicle',
-                'action': 'insertion',
-                'data': json.dumps(model_to_dict(Vehicle.objects.get(pk=response.data['id'])), cls=UUIDEncoder)
+                'action': WEBSOCKET_INSERTION_ACTION,
+                'meta': serializer.data
             }
 
             async_to_sync(channel_layer.group_send)(
@@ -65,3 +67,28 @@ class VehicleViewSet(viewsets.ModelViewSet):
             )
 
         return response
+
+    def update(self, request, *args, **kwargs):
+        response = super().update(request, args, kwargs)
+        instance = self.get_object()
+
+        if response.status_code == status.HTTP_200_OK:
+            channel_layer = get_channel_layer()
+
+            payload = {
+                'type': 'vehicle_updated',
+                'meta': {
+                    'updated_by': request.user.username,
+                    'perimeter': 'vehicle',
+                    'action': WEBSOCKET_UPDATE_ACTION
+                }
+            }
+
+            async_to_sync(channel_layer.group_send)(
+                VEHICLE_SUBSCRIBER_GROUP_NAME + '_target_' + str(instance.id),
+                payload
+            )
+
+        return Response(VehicleDetailSerializer(instance).data)
+
+

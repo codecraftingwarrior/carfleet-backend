@@ -7,7 +7,7 @@ class UUIDEncoder(json.JSONEncoder):
         if isinstance(obj, UUID):
             # if the obj is uuid, we simply return the value of uuid
             return obj.hex
-        return json.JSONEncoder.default(self, obj)
+        return super().default(obj)
 
 
 def format_datetime(value):
