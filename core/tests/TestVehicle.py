@@ -27,7 +27,7 @@ class TestVehicle(AuthenticationAwareTestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Vehicle.objects.count(), 1)
         self.assertIsNotNone(response.json())
-        self.assertEqual(response.json()[0].get('id'), vehicle.id)
+        self.assertEqual(response.json().get('results')[0].get('id'), vehicle.id)
 
     def test_detail(self):
         vehicle = Vehicle.objects.create(
