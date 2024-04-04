@@ -26,7 +26,7 @@ from core.viewsets.VehicleViewSet import VehicleViewSet
 from django.conf.urls.static import static
 from django.conf import settings
 
-from drf_spectacular.views import SpectacularAPIView, SpectacularRedocView, SpectacularSwaggerView
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 router = routers.SimpleRouter()
 

@@ -1,19 +1,14 @@
 import json
-from uuid import UUID
 
-from asgiref.sync import sync_to_async
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 from django.contrib.auth.models import AnonymousUser
 from django.shortcuts import get_object_or_404
 
-from core.serializers.vehicle.VehicleDetailSerializer import VehicleDetailSerializer
 from core.models import Vehicle
+from core.serializers.vehicle_serializers import VehicleDetailSerializer
 
 VEHICLE_SUBSCRIBER_GROUP_NAME = 'vehicle_subscribers'
-
-WEBSOCKET_INSERTION_ACTION = 'insertion'
-WEBSOCKET_UPDATE_ACTION = 'update'
 
 
 class VehicleConsumer(AsyncWebsocketConsumer):

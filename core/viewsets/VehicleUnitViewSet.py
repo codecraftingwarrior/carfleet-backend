@@ -1,4 +1,3 @@
-import typing
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from drf_spectacular.utils import extend_schema, extend_schema_view
@@ -6,15 +5,14 @@ from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from core import repositories, services
 from core.models import VehicleUnit
 from core.models.VehicleUnit import VehicleUnitStatuses
 from core.permissions import IsAdminOrReadOnly
-from core.serializers.rental_contract.RentalContractCreateOrUpdateSerializer import \
-    RentalContractCreateOrUpdateSerializer
-from core.serializers.sale.SaleCreateOrUpdateSerializer import SaleCreateOrUpdateSerializer
-from core.serializers.vehicle_unit.VehicleUnitCreateOrUpdateSerializer import VehicleUnitCreateOrUpdateSerializer
-from core.serializers.vehicle_unit.VehicleUnitDetailSerializer import VehicleUnitDetailSerializer
-from core.serializers.vehicle_unit.VehicleUnitListSerializer import VehicleUnitListSerializer
+from core.serializers import SaleCreateOrUpdateSerializer
+from core.serializers.rental_contract_serializers import RentalContractCreateOrUpdateSerializer
+from core.serializers.vehicle_unit_serializers import VehicleUnitListSerializer, VehicleUnitCreateOrUpdateSerializer, \
+    VehicleUnitDetailSerializer
 
 User = get_user_model()
 
@@ -61,36 +59,19 @@ class VehicleUnitViewSet(viewsets.ModelViewSet):
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def rent(self, request, pk):
         serializer = RentalContractCreateOrUpdateSerializer(data=request.data)
-        rented_vehicle = VehicleUnit.objects.get(pk=pk)
+        data, success = services.VehicleUnitService.rent(serializer, vehicle_unit_id=pk, customer_id=request.user.id)
 
-        if serializer.is_valid():
-            rental_contract = serializer.save()
-            if rental_contract:
-                with transaction.atomic():
-                    rental_contract.rented_by = User.objects.filter(id=request.user.id).first()
-                    rental_contract.vehicle = rented_vehicle
+        if success:
+            return Response(data, status=status.HTTP_201_CREATED)
 
-                    rented_vehicle.status = VehicleUnitStatuses.RENTED
-                    rented_vehicle.save()
-
-                    return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['post'], permission_classes=[permissions.IsAuthenticated])
     def sale(self, request, pk):
         serializer = SaleCreateOrUpdateSerializer(data=request.data)
-        sold_vehicle = VehicleUnit.objects.get(pk=pk)
+        data, success = services.VehicleUnitService.sale(serializer, vehicle_unit_id=pk, customer_id=request.user.id)
 
-        if serializer.is_valid():
-            sale = serializer.save()
-            if sale:
-                sale.customer = User.objects.filter(id=request.user.id).first()
-                sale.vehicle = sold_vehicle
+        if success:
+            return Response(data, status=status.HTTP_201_CREATED)
 
-                sold_vehicle.status = VehicleUnitStatuses.SOLD
-                sold_vehicle.save()
-
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(data, status=status.HTTP_400_BAD_REQUEST)

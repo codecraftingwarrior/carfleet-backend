@@ -1,21 +1,13 @@
-import json
-from uuid import UUID
-
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
 from drf_spectacular.utils import extend_schema
 from rest_framework import viewsets, status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from django.forms.models import model_to_dict
 
-from core.consumers import VEHICLE_SUBSCRIBER_GROUP_NAME, WEBSOCKET_INSERTION_ACTION, WEBSOCKET_UPDATE_ACTION
-from core.helpers import UUIDEncoder
+from core import services
+from core.consumers import VEHICLE_SUBSCRIBER_GROUP_NAME
 from core.models import Vehicle
 from core.permissions.IsAdmin import IsAdmin
-from core.serializers.vehicle.VehicleCreateOrUpdateSerializer import VehicleCreateOrUpdateSerializer
-from core.serializers.vehicle.VehicleDetailSerializer import VehicleDetailSerializer
-from core.serializers.vehicle.VehicleListSerializer import VehicleListSerializer
+from core.serializers import VehicleListSerializer, VehicleCreateOrUpdateSerializer, VehicleDetailSerializer
 
 
 @extend_schema(
@@ -51,19 +43,12 @@ class VehicleViewSet(viewsets.ModelViewSet):
         response = super().create(request, *args, **kwargs)
 
         if response.status_code == status.HTTP_201_CREATED:
-            channel_layer = get_channel_layer()
-            serializer = VehicleDetailSerializer(Vehicle.objects.get(id=response.data['id']))
+            payload = services.VehicleService.get_add_websocket_payload(vehicle_id=response.data['id'])
 
-            payload = {
-                'type': 'vehicle_added',
-                'perimeter': 'vehicle',
-                'action': WEBSOCKET_INSERTION_ACTION,
-                'meta': serializer.data
-            }
-
-            async_to_sync(channel_layer.group_send)(
+            services.WebsocketManager.send_to_channel(
                 VEHICLE_SUBSCRIBER_GROUP_NAME,
-                payload
+                event_type='vehicle_added',
+                payload=payload
             )
 
         return response
@@ -73,22 +58,12 @@ class VehicleViewSet(viewsets.ModelViewSet):
         instance = self.get_object()
 
         if response.status_code == status.HTTP_200_OK:
-            channel_layer = get_channel_layer()
-
-            payload = {
-                'type': 'vehicle_updated',
-                'meta': {
-                    'updated_by': request.user.username,
-                    'perimeter': 'vehicle',
-                    'action': WEBSOCKET_UPDATE_ACTION
-                }
-            }
-
-            async_to_sync(channel_layer.group_send)(
+            payload = services.VehicleService.get_update_websocket_payload(user_username=request.user.username,
+                                                                           instance=instance)
+            services.WebsocketManager.send_to_channel(
                 VEHICLE_SUBSCRIBER_GROUP_NAME + '_target_' + str(instance.id),
-                payload
+                payload=payload,
+                event_type='vehicle_updated'
             )
 
         return Response(VehicleDetailSerializer(instance).data)
-
-
