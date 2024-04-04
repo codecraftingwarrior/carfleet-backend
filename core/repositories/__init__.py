@@ -1,4 +1,4 @@
 from .VehicleRepository import VehicleRepository
-from .UserRepository import UserRepository
+from .ApplicationUserRepository import UserRepository
 from .VehicleUnitRepository import VehicleUnitRepository
 from .GroupRepository import GroupRepository
