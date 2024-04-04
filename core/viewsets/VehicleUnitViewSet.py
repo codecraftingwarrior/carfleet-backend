@@ -1,3 +1,4 @@
+import typing
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from drf_spectacular.utils import extend_schema, extend_schema_view

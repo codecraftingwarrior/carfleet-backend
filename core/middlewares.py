@@ -25,7 +25,6 @@ class TokenAuthMiddleware(BaseMiddleware):
             scope['user'] = AnonymousUser()
         else:
             scope['user'] = await self.fetch_user_from_token()
-
         return await super().__call__(scope, receive, send)
 
     @database_sync_to_async

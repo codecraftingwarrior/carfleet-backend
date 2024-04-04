@@ -21,7 +21,7 @@ class VehicleConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         await self.channel_layer.group_add(VEHICLE_SUBSCRIBER_GROUP_NAME, self.channel_name)
 
-        if isinstance(self.scope['user'], AnonymousUser):
+        if 'user' not in self.scope or isinstance(self.scope['user'], AnonymousUser):
             await self.close(code=403)
         else:
             await self.accept()
