@@ -1,11 +1,11 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework import viewsets, serializers
+from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from core import permissions
 from core.models import Brand
 from core.permissions.IsAdmin import IsAdmin
-from core.serializers.brand.BrandListSerializer import BrandListSerializer
+from core.serializers.brand_serializers import BrandListSerializer
+
 
 @extend_schema(
     tags=['Brands']

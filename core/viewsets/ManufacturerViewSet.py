@@ -3,9 +3,10 @@ from rest_framework.permissions import IsAuthenticated
 
 from core.models import Manufacturer
 from core.permissions.IsAdmin import IsAdmin
-from core.serializers.manufacturer.ManufacturerListSerializer import ManufacturerListSerializer
 
 from drf_spectacular.utils import extend_schema, extend_schema_view
+
+from core.serializers.manufacturer_serializers import ManufacturerListSerializer
 
 
 @extend_schema(

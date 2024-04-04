@@ -1,6 +1,5 @@
 from django.urls import reverse_lazy
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from core.models import Manufacturer
 from core.tests.AuthenticationAwareTestCase import AuthenticationAwareTestCase
@@ -14,7 +13,7 @@ class TestManufacturers(AuthenticationAwareTestCase):
         response = self.client.get(self.list_path, format='json')
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(manufacturer.name, response.json()[0].get('name'))
+        self.assertEqual(manufacturer.name, response.json().get('results')[0].get('name'))
 
     def test_retrieve_detail(self):
         manufacturer = Manufacturer.objects.create(name='Test Manufacturer')

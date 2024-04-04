@@ -1,12 +1,10 @@
 from drf_spectacular.utils import extend_schema
-from rest_framework import viewsets, status, serializers
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from core.serializers.auth.RegistrationSerializer import RegistrationSerializer
-from core.serializers.auth.RegistrationResponseSerializer import RegistrationResponseSerializer
-
+from core.serializers.auth_serializers import RegistrationSerializer, RegistrationResponseSerializer
 
 
 @extend_schema(

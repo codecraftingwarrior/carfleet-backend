@@ -1,8 +1,21 @@
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
 from rest_framework import serializers
 
+from core import services, enums
+from core.serializers.group_serializers import GroupListSerializer
+
 User = get_user_model()
+
+
+class RegistrationResponseSerializer(serializers.ModelSerializer):
+    groups = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = ['id', 'first_name', 'last_name', 'address', 'phone', 'groups']
+
+    def get_groups(self, instance):
+        return GroupListSerializer(instance.groups.all(), many=True).data
 
 
 class RegistrationSerializer(serializers.ModelSerializer):
@@ -17,23 +30,17 @@ class RegistrationSerializer(serializers.ModelSerializer):
         fields = ['first_name', 'last_name', 'address', 'phone', 'email', 'password', 'user_type']
 
     def create(self, validated_data):
-        customer_group, _ = Group.objects.get_or_create(name='Customer')
-        admin_group, _ = Group.objects.get_or_create(name='Admin')
         user_type = validated_data.pop('user_type')
 
-        user = User.objects.create_user(
+        role = enums.BasicRole.ADMIN if user_type == 'admin' else enums.BasicRole.CUSTOMER
+
+        return services.ApplicationUserService.create_user(
+            role=role,
             username=validated_data['email'],
             email=validated_data['email'],
             first_name=validated_data['first_name'],
             last_name=validated_data['last_name'],
             address=validated_data['address'],
-            phone=validated_data['phone']
+            phone=validated_data['phone'],
+            password=validated_data['password']
         )
-        user.set_password(validated_data['password'])
-
-        if user_type == 'customer':
-            customer_group.user_set.add(user)
-        elif user_type == 'admin':
-            customer_group.user_set.add(admin_group)
-
-        return user

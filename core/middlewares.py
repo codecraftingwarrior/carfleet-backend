@@ -1,7 +1,5 @@
 import collections
-from distutils.command.config import config
 from urllib.parse import parse_qs
-import jwt
 from channels.db import database_sync_to_async
 from channels.middleware import BaseMiddleware
 from django.contrib.auth import get_user_model

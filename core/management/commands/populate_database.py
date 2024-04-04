@@ -7,7 +7,7 @@ from django.db import transaction
 from django.contrib.auth.hashers import make_password
 from faker import Faker
 
-from core.models import ApplicationUser, Brand, RentalContract, Manufacturer, Sale, Vehicle, VehicleUnit
+from core.models import ApplicationUser, Brand, Manufacturer, Vehicle, VehicleUnit
 
 User = get_user_model()
 

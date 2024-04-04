@@ -1,6 +1,5 @@
 from django.urls import reverse_lazy
 from rest_framework import status
-from rest_framework.test import APITestCase
 
 from core.models import Brand
 from core.tests.AuthenticationAwareTestCase import AuthenticationAwareTestCase
